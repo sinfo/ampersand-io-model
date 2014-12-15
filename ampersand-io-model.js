@@ -30,58 +30,64 @@ var IOModel = State.extend({
     // the model will be valid when the attributes, if any, are set.
     if (attrs && !options.wait) {
       if (!this.set(attrs, options)){
-        return false;
+        return;
       } 
     } else {
       if (!this._validate(attrs, options)){
-        return false;
+        return;
       }
     }
 
     event = this.isNew() ? 'create' : 'update';
 
+    if (options.parse === void 0){
+      options.parse = true;
+    }
     var model = this;
     cb = function cb(err, result){
-      if (options.callback){
-        options.callback(err, model, result);
-      }
+      var serverAttrs = model.parse(result, options);
       if (err){
-        model.trigger('error', model, result, options);
+        return callback(err, result, model, options);
       }
       if (options.wait){
-        model.set(attrs, options);
-        return result;
+        serverAttrs = _.extend(attrs || {}, serverAttrs);
       }
+      if (_.isObject(serverAttrs) && !model.set(serverAttrs, options)) {
+        return callback(true, result, model, options);
+      }
+      callback(err, result, model, options);
     };
 
     this.socket.emit(this.events[event], attrs, cb);
 
-    if (options.wait){
-      return model;
-    }
+    return model;
   },
 
   // Fetch the model from the server. If the server's representation of the
   // model differs from its current attributes, they will be overridden,
   // triggering a `"change"` event.
-/*  fetch: function (options) {
+  fetch: function (options) {
     options = options ? _.clone(options) : {};
-    if (options.parse === void 0) options.parse = true;
-    var model = this;
-    var success = options.success;
-    options.success = function (resp) {
-      if (!model.set(model.parse(resp, options), options)) return false;
-      if (success) success(model, resp, options);
-      model.trigger('sync', model, resp, options);
+    if (options.parse === void 0){
+      options.parse = true;
+    }
+    var cb, model = this;
+    cb = function cb(err, result){
+      if (err){
+        return callback(err, result, model, options);
+      }
+      if (!model.set(model.parse(result, options), options)) {
+        return callback(true, result, model, options);
+      }
+      callback(err, result, model, options);
     };
-    wrapError(this, options);
-    return this.sync('read', this, options);
+    return model;
   },
 
   // Destroy this model on the server if it was already persisted.
   // Optimistically removes the model from its collection, if it has one.
   // If `wait: true` is passed, waits for the server to respond before removal.
-  destroy: function (options) {
+/*  destroy: function (options) {
       options = options ? _.clone(options) : {};
       var model = this;
       var success = options.success;
@@ -105,8 +111,17 @@ var IOModel = State.extend({
       var sync = this.sync('delete', this, options);
       if (!options.wait) destroy();
       return sync;
-  },*/
+  }*/
 
 });
+
+var callback = function(err, result, model, options){
+  if (options.callback){
+    options.callback(err, model, result);
+  }
+  if (err){
+    model.trigger('error', model, err, options);
+  }
+};
 
 module.exports = IOModel;
