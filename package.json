@@ -4,8 +4,12 @@
   "description": "ampersand module based on ampersand-model to be used with socket.io",
   "main": "ampersand-io-model.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "node_modules/.bin/jshint -c .jshintr ampersand-io-model.js"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/JGAntunes/ampersand-io-model"
@@ -22,5 +26,14 @@
   "bugs": {
     "url": "https://github.com/JGAntunes/ampersand-io-model/issues"
   },
-  "homepage": "https://github.com/JGAntunes/ampersand-io-model"
+  "homepage": "https://github.com/JGAntunes/ampersand-io-model",
+  "dependencies": {
+    "ampersand-state": "^4.4.4",
+    "socket.io-client": "^1.2.1",
+    "underscore": "^1.7.0"
+  },
+  "devDependencies": {
+    "jshint": "~2.5.10",
+    "pre-commit": "https://github.com/jgantunes/pre-commit/tarball/master"
+  }
 }

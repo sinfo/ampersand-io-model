@@ -18,7 +18,7 @@ var IOModel = State.extend({
     var attrs, event, cb;
 
     // Handle both `"key", value` and `{key: value}` -style arguments.
-    if (key == null || typeof key === 'object') {
+    if (key === null || typeof key === 'object') {
       attrs = key;
       options = val;
     } else {
@@ -29,17 +29,25 @@ var IOModel = State.extend({
     // `set(attr).save(null, opts)` with validation. Otherwise, check if
     // the model will be valid when the attributes, if any, are set.
     if (attrs && !options.wait) {
-      if (!this.set(attrs, options)) return false;
+      if (!this.set(attrs, options)){
+        return false;
+      } 
     } else {
-      if (!this._validate(attrs, options)) return false;
+      if (!this._validate(attrs, options)){
+        return false;
+      }
     }
 
     event = this.isNew() ? 'create' : 'update';
 
     var model = this;
     cb = function cb(err, result){
-      if (options.callback) options.callback(err, model, result);
-      if (err) model.trigger('error', model, result, options);
+      if (options.callback){
+        options.callback(err, model, result);
+      }
+      if (err){
+        model.trigger('error', model, result, options);
+      }
       if (options.wait){
         model.set(attrs, options);
         return result;
@@ -48,13 +56,15 @@ var IOModel = State.extend({
 
     this.socket.emit(this.events[event], attrs, cb);
 
-     if (options.wait) return model;
+    if (options.wait){
+      return model;
+    }
   },
 
   // Fetch the model from the server. If the server's representation of the
   // model differs from its current attributes, they will be overridden,
   // triggering a `"change"` event.
-  fetch: function (options) {
+/*  fetch: function (options) {
     options = options ? _.clone(options) : {};
     if (options.parse === void 0) options.parse = true;
     var model = this;
@@ -95,7 +105,7 @@ var IOModel = State.extend({
       var sync = this.sync('delete', this, options);
       if (!options.wait) destroy();
       return sync;
-  },
+  },*/
 
 });
 
