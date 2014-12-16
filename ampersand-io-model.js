@@ -85,7 +85,7 @@ var IOModel = State.extend({
       callback(null, result, model, options);
     };
 
-    this.socket.emit(this.events.fetch, options.data, cb);
+    this.socket.emit(this.events.fetch, this.attributes, cb);
 
     return model;
   },
@@ -116,7 +116,7 @@ var IOModel = State.extend({
       return;
     }
 
-    this.socket.emit(this.events.remove, model, cb);
+    this.socket.emit(this.events.remove, this.attributes, cb);
     if (!options.wait){
       destroy();
     } 

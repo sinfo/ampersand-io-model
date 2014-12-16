@@ -27,8 +27,15 @@ io.on('connection', function(socket){
 });
 io.listen(3000);
 
-var mymodel = new IOModel();
-
-mymodel.fetch();
+var mymodel =  new (IOModel.extend({props: {
+  id: ['string'],
+  thread: ['string'],
+  source: ['string'],
+  member: ['string'],
+  description: ['string'],
+  targets: ['array'],
+  posted: ['string']
+}}))();
 mymodel.save({id: 'mymodel'});
+mymodel.fetch();
 mymodel.destroy();
