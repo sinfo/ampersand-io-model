@@ -4,7 +4,7 @@
   "description": "ampersand module based on ampersand-model to be used with socket.io",
   "main": "ampersand-io-model.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "browserify tests | tape-run | tap-spec",
     "lint": "node_modules/.bin/jshint -c .jshintr ampersand-io-model.js"
   },
   "pre-commit": [
@@ -33,8 +33,12 @@
     "underscore": "^1.7.0"
   },
   "devDependencies": {
+    "browserify": "^7.0.1",
     "jshint": "~2.5.10",
+    "pre-commit": "https://github.com/jgantunes/pre-commit/tarball/master",
     "socket.io": "^1.2.1",
-    "pre-commit": "https://github.com/jgantunes/pre-commit/tarball/master"
+    "tap-spec": "^2.1.2",
+    "tape": "^3.0.3",
+    "tape-run": "^0.3.0"
   }
 }

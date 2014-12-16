@@ -8,6 +8,7 @@ var IOModel = State.extend({
   
   socket: io('http://localhost:3000'),
 
+  // The name of the events to be used in each operation
   events: {
     create: 'model-create',
     update: 'model-update',
@@ -41,6 +42,7 @@ var IOModel = State.extend({
       }
     }
 
+    // Set the event type
     event = this.isNew() ? 'create' : 'update';
 
     if (options.parse === void 0){
@@ -121,10 +123,13 @@ var IOModel = State.extend({
       destroy();
     } 
     return model;
-}
+  }
 
 });
 
+
+// Aux func used to trigger errors if they exist and use the optional
+// callback function if given
 var callback = function(err, result, model, options){
   if (options.callback){
     options.callback(err, model, result);
