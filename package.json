@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "jshint": "~2.5.10",
+    "socket.io": "^1.2.1",
     "pre-commit": "https://github.com/jgantunes/pre-commit/tarball/master"
   }
 }

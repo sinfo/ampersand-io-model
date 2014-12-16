@@ -6,12 +6,13 @@ var io = require('socket.io-client');
 
 var IOModel = State.extend({
   
-  socket: io(80),
+  socket: io('http://localhost:3000'),
 
   events: {
     create: 'model-create',
     update: 'model-update',
-    fetch: 'model-fetch'
+    fetch: 'model-fetch',
+    remove: 'model-remove'
   },
 
   save: function (key, val, options) {
@@ -24,6 +25,8 @@ var IOModel = State.extend({
     } else {
       (attrs = {})[key] = val;
     }
+
+    options = _.extend({validate: true}, options);
 
     // If we're not waiting and attributes exist, save acts as
     // `set(attr).save(null, opts)` with validation. Otherwise, check if
@@ -55,7 +58,7 @@ var IOModel = State.extend({
       if (_.isObject(serverAttrs) && !model.set(serverAttrs, options)) {
         return callback(true, result, model, options);
       }
-      callback(err, result, model, options);
+      callback(null, result, model, options);
     };
 
     this.socket.emit(this.events[event], attrs, cb);
@@ -79,39 +82,46 @@ var IOModel = State.extend({
       if (!model.set(model.parse(result, options), options)) {
         return callback(true, result, model, options);
       }
-      callback(err, result, model, options);
+      callback(null, result, model, options);
     };
+
+    this.socket.emit(this.events.fetch, options.data, cb);
+
     return model;
   },
 
   // Destroy this model on the server if it was already persisted.
   // Optimistically removes the model from its collection, if it has one.
   // If `wait: true` is passed, waits for the server to respond before removal.
-/*  destroy: function (options) {
-      options = options ? _.clone(options) : {};
-      var model = this;
-      var success = options.success;
+  destroy: function (options) {
+    options = options ? _.clone(options) : {};
+    var model = this;
 
-      var destroy = function () {
-          model.trigger('destroy', model, model.collection, options);
-      };
+    var destroy = function () {
+      model.trigger('destroy', model, model.collection, options);
+    };
 
-      options.success = function (resp) {
-          if (options.wait || model.isNew()) destroy();
-          if (success) success(model, resp, options);
-          if (!model.isNew()) model.trigger('sync', model, resp, options);
-      };
-
-      if (this.isNew()) {
-          options.success();
-          return false;
+    var cb = function cb(err, result){
+      if (err){
+        return callback(err, result, model, options);
       }
-      wrapError(this, options);
+      if (options.wait || model.isNew()){
+        destroy();
+      }
+      callback(null, result, model, options);
+    };
 
-      var sync = this.sync('delete', this, options);
-      if (!options.wait) destroy();
-      return sync;
-  }*/
+    if (this.isNew()) {
+      cb();
+      return;
+    }
+
+    this.socket.emit(this.events.remove, model, cb);
+    if (!options.wait){
+      destroy();
+    } 
+    return model;
+}
 
 });
 
