@@ -1,4 +1,4 @@
-ampersand-io-model UNDER DEVELOPMENT
+ampersand-io-model [UNDER DEVELOPMENT]
 ==================
 
 Based on [ampersand-model](https://github.com/AmpersandJS/ampersand-model) to be used with [socket.io](http://socket.io).
