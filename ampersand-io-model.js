@@ -17,7 +17,7 @@ var IOModel = State.extend({
   },
 
   save: function (key, val, options) {
-    var attrs, event, cb;
+    var attrs, event;
 
     // Handle both `"key", value` and `{key: value}` -style arguments.
     if (key === null || typeof key === 'object') {
@@ -49,7 +49,8 @@ var IOModel = State.extend({
       options.parse = true;
     }
     var model = this;
-    cb = function cb(err, result){
+    options.cb = options.callback;
+    options.callback = function cb(err, result){
       var serverAttrs = model.parse(result, options);
       if (err){
         return callback(err, result, model, options);
@@ -63,7 +64,7 @@ var IOModel = State.extend({
       callback(null, result, model, options);
     };
 
-    this.socket.emit(this.events[event], attrs, cb);
+    this.emit(this.events[event], attrs, options);
 
     return model;
   },
@@ -76,8 +77,9 @@ var IOModel = State.extend({
     if (options.parse === void 0){
       options.parse = true;
     }
-    var cb, model = this;
-    cb = function cb(err, result){
+    var model = this;
+    options.cb = options.callback;
+    options.callback = function cb(err, result){
       if (err){
         return callback(err, result, model, options);
       }
@@ -87,7 +89,7 @@ var IOModel = State.extend({
       callback(null, result, model, options);
     };
 
-    this.socket.emit(this.events.fetch, this.attributes, cb);
+    this.emit(this.events.fetch, this.attributes, options);
 
     return model;
   },
@@ -103,7 +105,8 @@ var IOModel = State.extend({
       model.trigger('destroy', model, model.collection, options);
     };
 
-    var cb = function cb(err, result){
+    options.cb = options.callback;
+    options.callback = function cb(err, result){
       if (err){
         return callback(err, result, model, options);
       }
@@ -114,15 +117,20 @@ var IOModel = State.extend({
     };
 
     if (this.isNew()) {
-      cb();
+      options.callback();
       return;
     }
 
-    this.socket.emit(this.events.remove, this.attributes, cb);
+    this.emit(this.events.remove, this.attributes, options);
     if (!options.wait){
       destroy();
     } 
     return model;
+  },
+
+  // Overridable function responsible for emitting the events
+  emit: function (event, model, options){
+    this.socket.emit(event, model, options.callback);
   }
 
 });
@@ -131,8 +139,8 @@ var IOModel = State.extend({
 // Aux func used to trigger errors if they exist and use the optional
 // callback function if given
 var callback = function(err, result, model, options){
-  if (options.callback){
-    options.callback(err, model, result);
+  if (options.cb){
+    options.cb(err, model, result);
   }
   if (err){
     model.trigger('error', model, err, options);
