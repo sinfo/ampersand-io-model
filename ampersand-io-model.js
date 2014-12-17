@@ -64,7 +64,7 @@ var IOModel = State.extend({
       callback(null, result, model, options);
     };
 
-    this.emit(this.events[event], attrs, options);
+    this.emit(this.events[event], this, options);
 
     return model;
   },
@@ -89,7 +89,7 @@ var IOModel = State.extend({
       callback(null, result, model, options);
     };
 
-    this.emit(this.events.fetch, this.attributes, options);
+    this.emit(this.events.fetch, this, options);
 
     return model;
   },
@@ -121,7 +121,7 @@ var IOModel = State.extend({
       return;
     }
 
-    this.emit(this.events.remove, this.attributes, options);
+    this.emit(this.events.remove, this, options);
     if (!options.wait){
       destroy();
     } 

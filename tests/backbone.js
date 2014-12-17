@@ -96,8 +96,6 @@
     t.plan(2);
     doc.save({title : "Henry V"});
     t.equal(env.emitArgs.event, 'model-update');
-    console.log(env.emitArgs.model);
-    console.log(doc);
     t.ok(_.isEqual(env.emitArgs.model, doc));
   });
 
@@ -123,12 +121,13 @@
     t.ok(true, "non-persisted model should not call emit");
   });
 
-  test("#1355 - `options` is passed to callback", function (t) {
+  test("model & result is passed to callback", function (t) {
     t.plan(3);
     var model = new Backbone.Model();
     var opts = {
-      callback: function (model, resp, options) {
-        t.ok(options);
+      callback: function (err, model, result) {
+        t.ok(result);
+        t.ok(model);
       }
     };
     model.emit = function (event, model, options) {
