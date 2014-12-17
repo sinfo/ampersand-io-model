@@ -122,7 +122,7 @@
   });
 
   test("model & result is passed to callback", function (t) {
-    t.plan(3);
+    t.plan(6);
     var model = new Backbone.Model();
     var opts = {
       callback: function (err, model, result) {
@@ -131,7 +131,7 @@
       }
     };
     model.emit = function (event, model, options) {
-      options.callback();
+      options.callback(null, 'test');
     };
     model.save({id: 1}, opts);
     model.fetch(opts);
@@ -156,6 +156,7 @@
     model.on('invalid', function () { t.ok(true); });
     model.save();
   });
+
   test("#1478 - Model `save` does not trigger change on unchanged attributes", function (t) {
     var Model = Backbone.Model.extend({
       emit: function (event, model, options) {
@@ -181,7 +182,7 @@
 
 
 // PRE-EXISTING BACKBONE TEST FUNCS
-/*(function preExistingFuncs() {
+(function preExistingFuncs() {
   var proxy = Backbone.Model.extend();
   var klass = Backbone.Collection.extend();
   var doc, collection;
@@ -921,4 +922,4 @@
     model.set({a: true});
   });
 
-})();*/
+})();

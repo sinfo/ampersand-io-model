@@ -34,11 +34,11 @@ var IOModel = State.extend({
     // the model will be valid when the attributes, if any, are set.
     if (attrs && !options.wait) {
       if (!this.set(attrs, options)){
-        return;
+        return false;
       } 
     } else {
       if (!this._validate(attrs, options)){
-        return;
+        return false;
       }
     }
 
