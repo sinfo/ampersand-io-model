@@ -98,7 +98,7 @@ book.save({author: "Teddy"});
 
 ### fetch `model.fetch([options])`
 
-Resets the model's state from the server by delegating to ampersand-sync. Returns a xhr. Useful if the model has yet to be populated with data, or you want to ensure you have the latest server state. A `"change"` event will be triggered if the retrieved state from the server differs from the current attributes. Accepts `success` and `error` callbacks in the options hash, which are both passed `(model, response, options)` as arguments.
+Resets the model's state from the server by emitting a `fetch` event and receiving the resulting `response` event. Returns your model. Useful if the model has yet to be populated with data, or you want to ensure you have the latest server state. A `"change"` event will be triggered if the retrieved state from the server differs from the current attributes. Accepts a `callback` in the options hash, which will be passed the arguments `(err, model, response)`.
 
 ```javascript
 var me = new Person({id: 123});
@@ -107,13 +107,11 @@ me.fetch();
 
 ### destroy `model.destroy([options])`
 
-Destroys the model on the server by delegating an HTTP `DELETE` request to ampersand-sync. Returns the xhr object, or `false` if the model [isNew](#ampersand-model-isnew). Accepts `success` and `error` callbacks in the options hash, which are both passed `(model, response, options)` as arguments.
+Destroys the model on the server by emitting an `remove` event. Returns the model, or `false` if the model [isNew](#ampersand-model-isnew). Accepts a `callback` in the options hash, which will be passed the arguments `(err, model, response)`.
 
 Triggers:
 
 * a `"destroy"` event on the model, which will bubble up through any collections which contain it.
-* a `"request"` event as it begins the Ajax request to the server
-* a `"sync"` event, after the server has successfully acknowledged the model's deletion.
 
 Pass `{wait: true}` if you'd like to wait for the server to respond before removing the model from the collection.
 
@@ -129,67 +127,70 @@ task.destroy({
 });
 ```
 
-### sync `model.sync(method, model, [options])`
+### emit `model.sync(method, model, [options])`
 
-Uses ampersand-sync to persist the state of a model to the server. Usually you won't call this directly, you'd use `save` or `destroy` instead, but it can be overriden for custom behaviour.
+Used to emit the necessary events to the server. It can be overriden to use any custom behaviour you wish.
 
-### ajaxConfig `model.ajaxConfig or model.ajaxConfig()`
+### socket `model.socket`
 
-ampersand-sync will call ajaxConfig on your model before it makes the request to the server, and will merge in any options you return to the request. When extending your own model, set an ajaxConfig function to modify the request before it goes to the server.
+Used to keep the socket connection info. Defaults to `io('http://localhost:3000')` but it can be overriden on extend.
 
-ajaxConfig can either be an object, or a function that returns an object, with the following options:
+### socket `model.events`
 
-* `useXDR` [boolean]: (applies to IE9 only with cross domain requests): signifies that this is a cross-domain request and that IE should use its XDomainRequest object. This is required if you're making cross-domain requests and want to support IE9). Note that XDR doesn't support headers/withCredentials.
-* `headers` [object]: any extra headers to send with the request.
-* `xhrFields` [object]: any fields to set directly on the [XHR](https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest) request object, most typically:
-    * `withCredentials` [boolean]: whether to send cross domain requests with authorization headers/cookies. Useful if you're making cross sub-domain requests with a root-domain auth cookie.
-* `beforeSend` [function]: beforeSend will be called before the request is made, and will be passed the raw `xhr` object if you wish to modify it directly before it's sent.
+Used to keep the respective events called in each of the use cases. The `response` event is used each time the socket receives some update event to be performed on the model. It can be overriden on extend. Defaults to:
 
 ```javascript
-var Person = AmpersandModel.extend({
-    urlRoot: 'http://otherdomain.example.com/people',
+events: {
+    create: 'model-create',
+    update: 'model-update',
+    fetch: 'model-fetch',
+    remove: 'model-remove',
+    response: 'model-response'
+},
 
-    ajaxConfig: function () {
-        return {
-            headers: {
-                'Access-Token': this.accessToken
-            },
-            xhrFields: {
-                'withCredentials': true
-            }
-        };
-    }
+```javascript
+
+//socket server init
+var io = require('socket.io')();
+var IOModel = require('./ampersand-io-model');
+
+io.on('connection', function(socket){
+	
+	console.log('Test client connected!');
+
+	socket.on('model-create', function(data, cb){
+		console.log(data);
+		cb();
+	});
+
+	socket.on('model-update', function(data, cb){
+		console.log(data);
+		cb();
+	});
+
+	socket.on('model-fetch', function(data, cb){
+		console.log(data);
+		cb();
+	});
+
+	socket.on('model-remove', function(data, cb){
+		console.log(data);
+		cb();
+	});
 });
+io.listen(3000);
 
-var me = new Person({ id: 123 });
-me.fetch();
-```
+//Model definition
+var mymodel =  new (IOModel.extend({props: {
+  id: ['string'],
+  thread: ['string'],
+  source: ['string'],
+  member: ['string']
+}}))();
 
-# Configuring
-
-
-### url `model.url or model.url()`
-
-The relative url the model should use to edit the resource on the server. 
-
-### urlRoot `model.urlRoot or model.urlRoot()`
-
-The base url to use for fetching this model. This is useful if the model is *not* in a collection and you still want to set a fixed "root" but have a dynamic model.url(). Can also be a function.
-
-If your model is in a collection that has a `url` you won't need this, because the model will try to build the URL from its collection.
-
-```js
-var Person = AmpersandModel.extend({
-    props: {
-        id: 'string',
-        name: 'string'
-    },
-    urlRoot: '/api/persons'
-});
-
-var bob = new Person({id: "1234"});
-
-console.log(bob.url()); //=> "/api/persons/1234"
+mymodel.save({id: 'mymodel'});
+mymodel.fetch();
+mymodel.destroy();
 ```
 
 ## License
