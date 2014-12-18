@@ -5,7 +5,7 @@
   "main": "ampersand-io-model.js",
   "scripts": {
     "test": "browserify tests | tape-run | tap-spec",
-    "lint": "node_modules/.bin/jshint -c .jshintr ampersand-io-model.js"
+    "lint": "node_modules/.bin/jshint -c .jshintrc ampersand-io-model.js"
   },
   "pre-commit": [
     "lint"
