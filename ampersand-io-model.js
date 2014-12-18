@@ -54,15 +54,15 @@ var IOModel = State.extend({
     options.callback = function cb(err, result){
       var serverAttrs = model.parse(result, options);
       if (err){
-        return callback(err, result, model, options);
+        return callback(err, model, result, options);
       }
       if (options.wait){
         serverAttrs = _.extend(attrs || {}, serverAttrs);
       }
       if (_.isObject(serverAttrs) && !model.set(serverAttrs, options)) {
-        return callback(true, result, model, options);
+        return callback(true, model, result, options);
       }
-      callback(null, result, model, options);
+      callback(null, model, result, options);
     };
 
     this.emit(this.events[event], this, options);
@@ -82,12 +82,12 @@ var IOModel = State.extend({
     options.cb = options.callback;
     options.callback = function cb(err, result){
       if (err){
-        return callback(err, result, model, options);
+        return callback(err, model, result, options);
       }
       if (!model.set(model.parse(result, options), options)) {
-        return callback(true, result, model, options);
+        return callback(true, model, result, options);
       }
-      callback(null, result, model, options);
+      callback(null, model, result, options);
     };
 
     this.emit(this.events.fetch, this, options);
@@ -109,12 +109,12 @@ var IOModel = State.extend({
     options.cb = options.callback;
     options.callback = function cb(err, result){
       if (err){
-        return callback(err, result, model, options);
+        return callback(err, model, result, options);
       }
       if (options.wait || model.isNew()){
         destroy();
       }
-      callback(null, result, model, options);
+      callback(null, model, result, options);
     };
 
     if (this.isNew()) {
@@ -139,7 +139,7 @@ var IOModel = State.extend({
 
 // Aux func used to trigger errors if they exist and use the optional
 // callback function if given
-var callback = function(err, result, model, options){
+var callback = function(err, model, result, options){
   if (options.cb){
     options.cb(err, model, result);
   }
