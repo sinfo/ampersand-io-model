@@ -3,7 +3,7 @@ var IOModel = require('./ampersand-io-model');
 
 io.on('connection', function(socket){
 	
-	console.log("Test client connected!");
+	console.log('Test client connected!');
 
 	socket.on('model-create', function(data, cb){
 		console.log(data);
@@ -31,10 +31,7 @@ var mymodel =  new (IOModel.extend({props: {
   id: ['string'],
   thread: ['string'],
   source: ['string'],
-  member: ['string'],
-  description: ['string'],
-  targets: ['array'],
-  posted: ['string']
+  member: ['string']
 }}))();
 mymodel.save({id: 'mymodel'});
 mymodel.fetch();

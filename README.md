@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JGAntunes/ampersand-io-model.svg?branch=master)](https://travis-ci.org/JGAntunes/ampersand-io-model)
+
 ampersand-io-model [UNDER DEVELOPMENT]
 ==================
 
@@ -36,21 +38,21 @@ As with AmpersandState, definitions like `props`, `session`, `derived` etc will 
 
 ```javascript
 var Person = AmpersandIOModel.extend({
-    props: {
-        firstName: 'string',
-        lastName: 'string'
-    },
-    session: {
-        signedIn: ['boolean', true, false],
-    },
-    derived: {
-        fullName: {
-            deps: ['firstName', 'lastName'],
-            fn: function () {
-                return this.firstName + ' ' + this.lastName;
-            }
-        }
+  props: {
+    firstName: 'string',
+    lastName: 'string'
+  },
+  session: {
+    signedIn: ['boolean', true, false],
+  },
+  derived: {
+    fullName: {
+      deps: ['firstName', 'lastName'],
+      fn: function () {
+        return this.firstName + ' ' + this.lastName;
+      }
     }
+  }
 });
 ```
 
@@ -63,8 +65,8 @@ As with AmpersandState, if you have defined an **initialize** function for your 
 
 ```javascript
 var me = new Person({
-    firstName: 'Phil',
-    lastName: 'Roberts'
+  firstName: 'Phil',
+  lastName: 'Roberts'
 });
 
 me.firstName //=> Phil
@@ -118,12 +120,12 @@ Pass `{wait: true}` if you'd like to wait for the server to respond before remov
 ```javascript
 var task = new Task({id: 123});
 task.destroy({
-    success: function () {
-        alert('Task destroyed!');
-    },
-    error: function () {
-        alert('There was an error destroying the task');
-    },
+  success: function () {
+    alert('Task destroyed!');
+  },
+  error: function () {
+    alert('There was an error destroying the task');
+  },
 });
 ```
 
@@ -141,11 +143,11 @@ Used to keep the respective events called in each of the use cases. The `respons
 
 ```javascript
 events: {
-    create: 'model-create',
-    update: 'model-update',
-    fetch: 'model-fetch',
-    remove: 'model-remove',
-    response: 'model-response'
+  create: 'model-create',
+  update: 'model-update',
+  fetch: 'model-fetch',
+  remove: 'model-remove',
+  response: 'model-response'
 },
 ```
 

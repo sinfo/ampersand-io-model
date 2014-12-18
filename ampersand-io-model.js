@@ -13,7 +13,8 @@ var IOModel = State.extend({
     create: 'model-create',
     update: 'model-update',
     fetch: 'model-fetch',
-    remove: 'model-remove'
+    remove: 'model-remove',
+    response: 'model-response'
   },
 
   save: function (key, val, options) {
