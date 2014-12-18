@@ -127,7 +127,7 @@ task.destroy({
 });
 ```
 
-### emit `model.sync(method, model, [options])`
+### emit `model.emit(event, model, [options])`
 
 Used to emit the necessary events to the server. It can be overriden to use any custom behaviour you wish.
 
@@ -147,7 +147,9 @@ events: {
     remove: 'model-remove',
     response: 'model-response'
 },
+```
 
+### demo
 ```javascript
 
 //socket server init
