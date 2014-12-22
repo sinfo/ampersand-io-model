@@ -1,21 +1,19 @@
 /*$AMPERSAND_VERSION*/
-var State = require('ampersand-state');
 var _ = require('underscore');
-var io = require('socket.io-client');
+var AmpersandState = require('ampersand-state');
+var AmpersandIO = require('ampersand-io');
 
+var events = {
+  onFetch: 'fetch-response',
+  create: 'model-create',
+  update: 'model-update',
+  fetch: 'model-fetch',
+  remove: 'model-remove'
+};
 
-var IOModel = State.extend({
-  
-  socket: io('http://localhost:3000'),
+var AmpersandIOModel = AmpersandIO.extend({
 
-  // The name of the events to be used in each operation
-  events: {
-    create: 'model-create',
-    update: 'model-update',
-    fetch: 'model-fetch',
-    remove: 'model-remove',
-    response: 'model-response'
-  },
+  events: events,
 
   save: function (key, val, options) {
     var attrs, event;
@@ -51,18 +49,18 @@ var IOModel = State.extend({
     }
     var model = this;
     options.cb = options.callback;
-    options.callback = function cb(err, result){
-      var serverAttrs = model.parse(result, options);
+    options.callback = function cb(err, resp){
+      var serverAttrs = model.parse(resp, options);
       if (err){
-        return callback(err, model, result, options);
+        return callback(err, model, resp, options);
       }
       if (options.wait){
         serverAttrs = _.extend(attrs || {}, serverAttrs);
       }
       if (_.isObject(serverAttrs) && !model.set(serverAttrs, options)) {
-        return callback(true, model, result, options);
+        return callback(true, model, resp, options);
       }
-      callback(null, model, result, options);
+      callback(null, model, resp, options);
     };
 
     this.emit(this.events[event], this, options);
@@ -80,16 +78,23 @@ var IOModel = State.extend({
     }
     var model = this;
     options.cb = options.callback;
-    options.callback = function cb(err, result){
+    options.callback = function (err, resp){
       if (err){
-        return callback(err, model, result, options);
+        this.trigger('error', this, resp, options);
       }
-      if (!model.set(model.parse(result, options), options)) {
-        return callback(true, model, result, options);
+    };
+    options.respCallback = function cb(data){
+      if (data.err){
+        return callback(data.err, model, data.resp, options);
       }
-      callback(null, model, result, options);
+      if (!model.set(model.parse(data.resp, options), options)) {
+        return callback(true, model, data.resp, options);
+      }
+      callback(null, model, data.resp, options);
+      model.removeListeners([model.events.onFetch]);
     };
 
+    this.addListeners({listener: this.events.onFetch, fn: options.respCallback, active: true});
     this.emit(this.events.fetch, this, options);
 
     return model;
@@ -107,14 +112,14 @@ var IOModel = State.extend({
     };
 
     options.cb = options.callback;
-    options.callback = function cb(err, result){
+    options.callback = function cb(err, resp){
       if (err){
-        return callback(err, model, result, options);
+        return callback(err, model, resp, options);
       }
       if (options.wait || model.isNew()){
         destroy();
       }
-      callback(null, model, result, options);
+      callback(null, model, resp, options);
     };
 
     if (this.isNew()) {
@@ -127,25 +132,18 @@ var IOModel = State.extend({
       destroy();
     } 
     return model;
-  },
-
-  // Overridable function responsible for emitting the events
-  emit: function (event, model, options){
-    this.socket.emit(event, model, options.callback);
   }
 
 });
 
-
 // Aux func used to trigger errors if they exist and use the optional
 // callback function if given
-var callback = function(err, model, result, options){
+var callback = function(err, model, resp, options){
   if (options.cb){
-    options.cb(err, model, result);
+    options.cb(err, model, resp);
   }
   if (err){
     model.trigger('error', model, err, options);
   }
 };
-
-module.exports = IOModel;
+module.exports = AmpersandIOModel;

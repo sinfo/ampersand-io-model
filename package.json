@@ -28,8 +28,9 @@
   },
   "homepage": "https://github.com/JGAntunes/ampersand-io-model",
   "dependencies": {
+    "ampersand-class-extend": "^1.0.1",
     "ampersand-state": "^4.4.4",
-    "socket.io-client": "^1.2.1",
+    "ampersand-io": "https://github.com/jgantunes/ampersand-io/tarball/master",
     "underscore": "^1.7.0"
   },
   "devDependencies": {

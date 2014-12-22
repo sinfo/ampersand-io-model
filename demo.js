@@ -1,4 +1,5 @@
 var io = require('socket.io')();
+var State = require('ampersand-state');
 var IOModel = require('./ampersand-io-model');
 
 io.on('connection', function(socket){
@@ -16,6 +17,8 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('model-fetch', function(data, cb){
+		console.log('about to emit');
+		socket.emit('fetch-response', {test: 'test'}, function(){console.log('done');});
 		console.log(data);
 		cb();
 	});
@@ -27,7 +30,7 @@ io.on('connection', function(socket){
 });
 io.listen(3000);
 
-var mymodel =  new (IOModel.extend({props: {
+var mymodel =  new (State.extend(new IOModel(), {props: {
   id: ['string'],
   thread: ['string'],
   source: ['string'],
@@ -36,3 +39,4 @@ var mymodel =  new (IOModel.extend({props: {
 mymodel.save({id: 'mymodel'});
 mymodel.fetch();
 mymodel.destroy();
+console.log(mymodel.listeners);
