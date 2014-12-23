@@ -4,7 +4,7 @@ var AmpersandState = require('ampersand-state');
 var AmpersandIO = require('ampersand-io');
 
 var events = {
-  onFetch: 'fetch-response',
+  onFetch: 'on-model-fetch',
   create: 'model-create',
   update: 'model-update',
   fetch: 'model-fetch',
