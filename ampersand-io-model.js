@@ -4,14 +4,19 @@ var AmpersandState = require('ampersand-state');
 var AmpersandIO = require('ampersand-io');
 
 var events = {
-  onFetch: 'on-model-fetch',
+  onFetch: 'fetch-response',
   create: 'model-create',
   update: 'model-update',
   fetch: 'model-fetch',
   remove: 'model-remove'
 };
 
-var AmpersandIOModel = AmpersandIO.extend({
+function AmpersandIOModel(attrs, options){
+  Base.call(this, attrs, options);
+  IOMixin.call(this, options);
+}
+
+var IOMixin = AmpersandIO.extend({
 
   events: events,
 
@@ -146,4 +151,9 @@ var callback = function(err, model, resp, options){
     model.trigger('error', model, err, options);
   }
 };
+
+var Base = AmpersandState.extend();
+AmpersandIOModel.prototype = Object.create(Base.prototype);
+AmpersandIOModel.extend = Base.extend;
+
 module.exports = AmpersandIOModel;
