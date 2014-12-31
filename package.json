@@ -30,7 +30,7 @@
   "dependencies": {
     "ampersand-class-extend": "^1.0.1",
     "ampersand-state": "^4.4.4",
-    "ampersand-io": "https://github.com/jgantunes/ampersand-io/tarball/master",
+    "ampersand-io": "^0.1.0",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
