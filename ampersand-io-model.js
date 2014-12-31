@@ -12,8 +12,9 @@ var events = {
 };
 
 function AmpersandIOModel(attrs, options){
+  options || (options = {});
   Base.call(this, attrs, options);
-  IOMixin.call(this, options);
+  IOMixin.call(this, options.socket, options);
 }
 
 var IOMixin = AmpersandIO.extend({
