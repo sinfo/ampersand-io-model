@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/JGAntunes/ampersand-io-model"
+    "url": "https://github.com/sinfo/ampersand-io-model"
   },
   "keywords": [
     "ampersand",
@@ -24,9 +24,9 @@
   "author": "Joao Antunes <j.goncalo.antunes@gmail.com> (http://github.com/JGAntunes)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JGAntunes/ampersand-io-model/issues"
+    "url": "https://github.com/sinfo/ampersand-io-model/issues"
   },
-  "homepage": "https://github.com/JGAntunes/ampersand-io-model",
+  "homepage": "https://github.com/sinfo/ampersand-io-model",
   "dependencies": {
     "ampersand-class-extend": "^1.0.1",
     "ampersand-state": "^4.4.4",
