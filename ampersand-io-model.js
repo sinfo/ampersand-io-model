@@ -11,11 +11,11 @@ var events = {
   remove: 'model-remove'
 };
 
-function AmpersandIOModel(attrs, options){
+var AmpersandIOModel = function (attrs, options){
   options || (options = {});
   Base.call(this, attrs, options);
-  IOMixin.call(this, options.socket, options);
-}
+  AmpersandIO.call(this, options.socket, options);
+};
 
 var IOMixin = AmpersandIO.extend({
 
@@ -86,21 +86,24 @@ var IOMixin = AmpersandIO.extend({
     options.cb = options.callback;
     options.callback = function (err, resp){
       if (err){
-        this.trigger('error', this, resp, options);
+        model.trigger('error', this, resp, options);
       }
     };
-    options.respCallback = function cb(data){
+    options.respCallback = function cb(data, serverCb){
+      console.log('ON CALLBACK');
+      model.removeListeners([model.events.onFetch]);
       if (data.err){
         return callback(data.err, model, data.resp, options);
       }
       if (!model.set(model.parse(data.resp, options), options)) {
         return callback(true, model, data.resp, options);
       }
-      callback(null, model, data.resp, options);
-      model.removeListeners([model.events.onFetch]);
+      callback(null, model, data.resp, options, serverCb);
     };
 
-    this.addListeners({listener: this.events.onFetch, fn: options.respCallback, active: true});
+    var listener = {};
+    listener[this.events.onFetch] = { fn: options.respCallback, active: true};
+    this.addListeners(listener);
     this.emit(this.events.fetch, this, options);
 
     return model;
@@ -142,9 +145,10 @@ var IOMixin = AmpersandIO.extend({
 
 });
 
-// Aux func used to trigger errors if they exist and use the optional
-// callback function if given
-var callback = function(err, model, resp, options){
+// Aux func used to trigger errors if they exist, use the optional
+// callback function if given and call the server ack callback if exists
+var callback = function(err, model, resp, options, serverCb){
+  !serverCb || serverCb();
   if (options.cb){
     options.cb(err, model, resp);
   }
@@ -155,6 +159,7 @@ var callback = function(err, model, resp, options){
 
 var Base = AmpersandState.extend();
 AmpersandIOModel.prototype = Object.create(Base.prototype);
+_.extend(AmpersandIOModel.prototype, IOMixin.prototype);
 AmpersandIOModel.extend = Base.extend;
 
 module.exports = AmpersandIOModel;

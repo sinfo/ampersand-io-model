@@ -30,13 +30,18 @@ io.on('connection', function(socket){
 });
 io.listen(3000);
 
-var mymodel =  new (State.extend(new IOModel(), {props: {
-  id: ['string'],
-  thread: ['string'],
-  source: ['string'],
-  member: ['string']
-}}))();
+var mymodel =  new (IOModel.extend({
+	props: {
+	  id: ['string'],
+	  thread: ['string'],
+	  source: ['string'],
+	  member: ['string']
+	}
+}))({}, {socket: 'http://localhost:3000'});
+
+console.log(mymodel);
+
 mymodel.save({id: 'mymodel'});
 mymodel.fetch();
 mymodel.destroy();
-console.log(mymodel.listeners);
+console.log(mymodel);

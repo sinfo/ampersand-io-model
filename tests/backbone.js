@@ -4,6 +4,14 @@
   var tape = require('tape');
   var test = tape;
 
+  var IOevents = {
+    onFetch: 'fetch-response',
+    create: 'model-create',
+    update: 'model-update',
+    fetch: 'model-fetch',
+    remove: 'model-remove'
+  };
+
   //qunit has equal/strictEqual, we just have equal
   tape.Test.prototype.strictEqual = function () {
     this.equal.apply(this, arguments);
@@ -54,7 +62,6 @@
 
 //ALTERED BACKBONE FUNCS BASED ON THE NEW MODEL
 (function newAlteredFuncs() {
-
   var proxy = Backbone.Model.extend();
   var klass = Backbone.Collection.extend();
   var doc, collection;
@@ -131,6 +138,9 @@
       }
     };
     model.emit = function (event, model, options) {
+      if(options.respCallback){
+        return options.respCallback({resp: 'test'});
+      }
       options.callback(null, 'test');
     };
     model.save({id: 1}, opts);
