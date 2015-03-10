@@ -34,9 +34,9 @@
     "underscore": "^1.7.0"
   },
   "devDependencies": {
-    "browserify": "^7.0.1",
-    "jshint": "~2.5.10",
-    "pre-commit": "https://github.com/jgantunes/pre-commit/tarball/master",
+    "browserify": "^9.0.3",
+    "jshint": "^2.6.3",
+    "pre-commit": "^1.0.6",
     "socket.io": "^1.2.1",
     "tap-spec": "^2.1.2",
     "tape": "^3.0.3",
