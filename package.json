@@ -1,6 +1,6 @@
 {
   "name": "ampersand-io-model",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "ampersand module based on ampersand-model to be used with socket.io",
   "main": "ampersand-io-model.js",
   "scripts": {

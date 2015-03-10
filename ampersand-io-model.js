@@ -90,7 +90,6 @@ var IOMixin = AmpersandIO.extend({
       }
     };
     options.respCallback = function cb(data, serverCb){
-      console.log('ON CALLBACK');
       model.removeListeners([model.events.onFetch]);
       if (data.err){
         return callback(data.err, model, data.resp, options);
