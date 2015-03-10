@@ -8,7 +8,8 @@
     "lint": "node_modules/.bin/jshint -c .jshintrc ampersand-io-model.js"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "test"
   ],
   "repository": {
     "type": "git",
