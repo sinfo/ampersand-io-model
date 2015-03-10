@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/JGAntunes/ampersand-io-model.svg?branch=master)](https://travis-ci.org/JGAntunes/ampersand-io-model)
+[![Build Status](https://travis-ci.org/sinfo/ampersand-io-model.svg?branch=master)](https://travis-ci.org/sinfo/ampersand-io-model)
 
 ampersand-io-model
 ==================
