@@ -1,6 +1,6 @@
 {
   "name": "ampersand-io-model",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "ampersand module based on ampersand-model to be used with socket.io",
   "main": "ampersand-io-model.js",
   "scripts": {
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/sinfo/ampersand-io-model",
   "dependencies": {
     "ampersand-state": "^4.4.4",
-    "ampersand-io": "^0.4.0",
+    "ampersand-io": "^0.4.1",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
@@ -40,6 +40,6 @@
     "socket.io": "^1.2.1",
     "tap-spec": "^2.1.2",
     "tape": "^3.0.3",
-    "tape-run": "^0.3.0"
+    "tape-run": "^1.0.0"
   }
 }
