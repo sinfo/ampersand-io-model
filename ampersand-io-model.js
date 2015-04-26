@@ -75,8 +75,7 @@ var IOMixin = AmpersandIO.extend({
   },
 
   // Fetch the model from the server. If the server's representation of the
-  // model differs from its current attributes, they will be overridden,
-  // triggering a `"change"` event.
+  // model differs from its current attributes, they will be overridden
   fetch: function (options) {
     options = options ? _.clone(options) : {};
     if (options.parse === void 0){
@@ -89,15 +88,15 @@ var IOMixin = AmpersandIO.extend({
         model.trigger('error', this, resp, options);
       }
     };
-    options.respCallback = function cb(data, serverCb){
+    options.respCallback = function cb(response, serverCb){
       model.removeListeners([model.events.onFetch]);
-      if (data.err){
-        return callback(data.err, model, data.resp, options);
+      if (response.err){
+        return callback(response.err, model, response.data, options);
       }
-      if (!model.set(model.parse(data.resp, options), options)) {
-        return callback(true, model, data.resp, options);
+      if (!model.set(model.parse(response.data, options), options)) {
+        return callback(true, model, response.data, options);
       }
-      callback(null, model, data.resp, options, serverCb);
+      callback(null, model, response.data, options, serverCb);
     };
 
     var listener = {};

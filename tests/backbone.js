@@ -139,7 +139,7 @@
     };
     model.emit = function (event, model, options) {
       if(options.respCallback){
-        return options.respCallback({resp: 'test'});
+        return options.respCallback({data: 'test'});
       }
       options.callback(null, 'test');
     };

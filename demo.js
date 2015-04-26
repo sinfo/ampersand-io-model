@@ -54,7 +54,7 @@ foo.on('connection', function(socket){
 
 	socket.on('model-fetch', function(data, cb){
 		console.log('about to emit foo');
-		socket.emit('fetch-response', {test: 'test'}, function(){console.log('done foo');});
+		socket.emit('fetch-response', {data: {id: 'fooModel', thread: 'test', source: 'test2', member: 'mymember'}}, function(){console.log('done foo');});
 		console.log(data);
 		cb();
 	});
@@ -80,11 +80,15 @@ var mymodelBar =  new (IOModel.extend({
 }))({}, {socket: 'http://localhost:3000/bar'});
 
 mymodelBar.save({id: 'barModel'});
-mymodelBar.fetch();
+mymodelBar.fetch({callback: function(){
+	console.log(mymodelBar.thread, mymodelBar.source);
+}});
 mymodelBar.destroy();
 
 mymodelFoo.save({id: 'fooModel'});
-mymodelFoo.fetch();
+mymodelFoo.fetch({callback: function(){
+	console.log(mymodelFoo.thread, mymodelFoo.source);
+}});
 mymodelFoo.destroy();
 
 /*var barClient = client('http://localhost:3000/bar');
