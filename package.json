@@ -1,7 +1,7 @@
 {
   "name": "ampersand-io-model",
   "version": "0.2.1",
-  "description": "ampersand module based on ampersand-model to be used with socket.io",
+  "description": "Ampersand module based on ampersand-model to be used with socket.io",
   "main": "ampersand-io-model.js",
   "scripts": {
     "test": "browserify tests | tape-run | tap-spec",
@@ -20,7 +20,9 @@
     "js",
     "model",
     "io",
-    "socket"
+    "socket",
+    "realtime",
+    "state"
   ],
   "author": "Joao Antunes <j.goncalo.antunes@gmail.com> (http://github.com/JGAntunes)",
   "license": "MIT",
