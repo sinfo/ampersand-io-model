@@ -76,15 +76,13 @@ var me = new Person({
 me.firstName //=> Phil
 ```
 
-When creating an `AmpersandIO` object, you may choose to pass in either a `socket` object or a string to be used as a namespace for a new socket.io-client instance. If none of those are provided the `AmpersandIO` instance will use the [socket](#socket-iosocket) object defined in the class. Options support a [listeners](#listeners-iolisteners) and [events](#events-ioevents) objects according to the ones mentioned above (note that these will override the class definitions) and also an `initListeners` prop which, if passed `true`, will [set the class listeners](#setlisteners-iosetlistenerslisteners) active.
-
 Available options:
 
 * `[parse]` {Boolean} - whether to call the class's [parse](#ampersand-state-parse) function with the initial attributes. _Defaults to `false`_.
 * `[parent]` {AmpersandState} - pass a reference to a model's parent to store on the model.
 * `[collection]` {Collection} - pass a reference to the collection the model is in. Defaults to `undefined`.
 * `[socket]` {Socket-io client/ string} - pass a reference to the socket-io client instance you're using or a string to be used as a namespace for a new socket.io-client instance.
-* `[events]` {[Events object](#events-ampersandiomodelevents)} - pass an `events` object as defined to override the pre-defined events used by the model.
+* `[events]` {[Events object](#events-modelevents)} - pass an `events` object as defined to override the pre-defined events used by the model.
 
 Other options are supported by the [ampsersand-io](https://github.com/sinfo/ampersand-io#constructorinitialize-new-ampersandiosocket-options) constructor, although they don't seem the most suited to this use case, you may use them if you like.
 
