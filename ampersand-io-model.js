@@ -84,17 +84,16 @@ var IOMixin = AmpersandIO.extend({
     var model = this;
     options.cb = options.callback;
     options.callback = function (err, resp){
-      if (err){
-        model.trigger('error', this, resp, options);
-      }
+      callback(err, model, resp, options);
     };
+    
     options.respCallback = function cb(response, serverCb){
       model.removeListeners([model.events.onFetch]);
       if (response.err){
-        return callback(response.err, model, response.data, options);
+        return callback(response.err, model, response.data, options, serverCb);
       }
       if (!model.set(model.parse(response.data, options), options)) {
-        return callback(true, model, response.data, options);
+        return callback(true, model, response.data, options, serverCb);
       }
       callback(null, model, response.data, options, serverCb);
     };
@@ -151,7 +150,7 @@ var callback = function(err, model, resp, options, serverCb){
     options.cb(err, model, resp);
   }
   if (err){
-    model.trigger('error', model, err, options);
+    model.trigger('error', err, model, options);
   }
 };
 
